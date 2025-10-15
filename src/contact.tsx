@@ -99,7 +99,7 @@ useEffect(() => {
   return (
   <Routes>
   <Route path="/" element={
-    <div className="flex h-[90vh]">
+    <div className="flex h-[78vh]">
     <Calldialog/>
     
       <TooltipProvider>

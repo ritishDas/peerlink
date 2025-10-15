@@ -42,27 +42,57 @@ const navigate = useNavigate();
   }, [remoteStream]);
 
   // 🔹 Screen capture + audio
-  async function startScreenCapture() {
-    const screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: false,
-    });
+async function startScreenCapture() {
+  let screenStream: MediaStream | null = null;
+  let micStream: MediaStream | null = null;
 
-    const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  // Try to get screen capture, fallback gracefully if not supported
+  try {
+    if (navigator.mediaDevices.getDisplayMedia) {
+      screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false, // usually screen audio isn't supported on mobile
+      });
+    } else {
+      console.warn("Screen capture not supported on this device/browser.");
+    }
+  } catch (err) {
+    console.warn("Error accessing screen capture:", err);
+  }
 
-    const combinedStream = new MediaStream([
+  // Try to get microphone audio
+  try {
+    if (navigator.mediaDevices.getUserMedia) {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    }
+  } catch (err) {
+    console.warn("Error accessing microphone:", err);
+  }
+
+  // Combine streams if possible
+  let combinedStream: MediaStream;
+  if (screenStream && micStream) {
+    combinedStream = new MediaStream([
       ...screenStream.getVideoTracks(),
       ...micStream.getAudioTracks(),
     ]);
-
-    setLocalStream(combinedStream);
-
-    if (localVideoRef.current) {
-      localVideoRef.current.srcObject = combinedStream;
-    }
-
-    console.log("Stream started:", combinedStream);
+  } else if (screenStream) {
+    combinedStream = screenStream;
+  } else if (micStream) {
+    combinedStream = micStream;
+  } else {
+    console.error("No media available for streaming.");
+    return;
   }
+
+  setLocalStream(combinedStream);
+
+  if (localVideoRef.current) {
+    localVideoRef.current.srcObject = combinedStream;
+  }
+
+  console.log("Stream started:", combinedStream);
+}
 
   // 🔹 Setup connection once local stream is ready
   useEffect(() => {
