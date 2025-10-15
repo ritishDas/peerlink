@@ -30,7 +30,7 @@ function Card({ name, email, photoURL, timedate }: ContactCardProps) {
 
         <Tooltip>
           <TooltipTrigger asChild>
-    <Button onClick={() => initiateCall(name, email, photoURL)} className="cursor-pointer"  size="icon" variant="outline">
+    <Button onClick={() => initiateCall(email)} className="cursor-pointer"  size="icon" variant="outline">
               <Phone />
             </Button>
           </TooltipTrigger>

@@ -11,7 +11,7 @@ export default function Contact() {
     <div className='flex space-x-5 items-center'>
     <Tooltip>
     <TooltipTrigger asChild>
-    <Button onClick={() => initiateCall(name, email, photoURL)} className="cursor-pointer"  size="icon" variant="outline">
+    <Button onClick={() => initiateCall(email)} className="cursor-pointer"  size="icon" variant="outline">
     <Phone/>
     </Button>
     </TooltipTrigger>

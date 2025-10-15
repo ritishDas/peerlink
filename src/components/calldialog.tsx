@@ -1,6 +1,6 @@
 import { Phone, PhoneMissed } from 'lucide-react';
 import Contactcard from "./contactcard";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '../components/ui/button';
 import { callAccept, callReject } from '../calling';

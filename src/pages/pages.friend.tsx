@@ -10,7 +10,7 @@ export default function Friend() {
       <Contactcard name={name} email={email} photoURL={photoURL}/>
     <Tooltip>
     <TooltipTrigger asChild>
-    <Button onClick={() => initiateCall(name, email, photoURL)} className="cursor-pointer"  size="icon" variant="outline">
+    <Button onClick={() => initiateCall( email )} className="cursor-pointer"  size="icon" variant="outline">
     <Phone/>
     </Button>
     </TooltipTrigger>

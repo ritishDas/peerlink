@@ -14,7 +14,6 @@ import Callpage from './pages/pages.call';
 
 export default function Contacts() {
   const [page, setPage] = useState('contacts');
-  const [type, setType] = useState('caller');
   const {setCall} = useCall();
   const {login} = useStore();
 
@@ -37,7 +36,6 @@ useEffect(() => {
         const callerRef = doc(db, "users", callerId);
         const callerSnap = await getDoc(callerRef);
         if(callDoc.accepted){
-          setType('callee');
           navigate('/video/callee')
           return
         }
@@ -72,7 +70,6 @@ useEffect(() => {
 
         if(callDoc.accepted){
           navigate('/video/caller')
-          setType('caller');
           return
         }
 

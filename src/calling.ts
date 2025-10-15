@@ -3,7 +3,7 @@ import { useStore } from "./statemng/zustand"
 import { db } from "./firebaseConfig";
 import { useCall } from "./statemng/calling";
 
-export async function initiateCall(name:string, email: string, photoURL:string) {
+export async function initiateCall( email: string ) {
   const { login } = useStore.getState(); // ✅ use getState() since we’re outside React component
 
   if (!login.status) {
