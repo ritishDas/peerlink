@@ -13,12 +13,10 @@ function Card({ name, email, photoURL, type }: CardProps) {
 
   const handleAccept = async() => {
     await callAccept();
-    setCall({ status: false });
   };
 
   const handleReject = async() => {
     await callReject();
-    setCall({ status: false });
   };
 
   return (
@@ -51,7 +49,6 @@ export default function Calldialog() {
   const { call } = useCall();
   if(!call.status) return <></>
   const caller = {...call.user, type:call.type};
-
 
   return (
     <Dialog

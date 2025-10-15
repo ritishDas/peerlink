@@ -19,7 +19,7 @@ export default function Navbar({ name, photoURL }: { name: string; photoURL?: st
         </div>
 
         {/* Right side: user info */}
-        {login? <div className="flex items-center gap-3">
+        {login.status? <div className="flex items-center gap-3">
           <Separator orientation="vertical" className="h-6" />
           <Avatar className="h-9 w-9 border">
             <AvatarImage src={photoURL} alt="profile picture" />

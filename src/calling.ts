@@ -35,6 +35,7 @@ export async function initiateCall(name:string, email: string, photoURL:string) 
       accepted: false,
       caller: senderId,
       callee: receiverId,
+      icecandid: []
     });
 
     console.log("Call initiated:", docRef.id);

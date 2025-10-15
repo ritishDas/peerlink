@@ -11,7 +11,7 @@ import Contacts from "./contact";
 
 export default function Body() {
   const [user, setUser] = useState<any>(null);
-  const {setLogin} = useStore();
+  const {login, setLogin} = useStore();
 
 async function addUser(name: string | null, email: string | null, photoURL: string | null):Promise<string> {
   try {
@@ -62,6 +62,6 @@ useEffect(() => {
   name = {user?.displayName}
   photoURL = {user?.photoURL}
   />
-  {user?<Contacts/>:<AuthSection/> }
+  {login.status?<Contacts/>:<AuthSection/> }
   </div>
 }
