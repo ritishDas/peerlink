@@ -9,7 +9,6 @@ import { useCall } from '../statemng/calling';
 type CardProps = { name: string; email: string; photoURL: string, type:string };
 
 function Card({ name, email, photoURL, type }: CardProps) {
-  const { setCall } = useCall();
 
   const handleAccept = async() => {
     await callAccept();

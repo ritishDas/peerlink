@@ -11,7 +11,7 @@ import { useStore } from "./statemng/zustand";
 
 
 export async function createRoom(
-  peerConnection:any,
+  peerConnection: RTCPeerConnection,
   localStream: MediaStream,
   remoteStream: MediaStream
 ) {

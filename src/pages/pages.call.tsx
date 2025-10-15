@@ -70,8 +70,10 @@ const navigate = useNavigate();
 console.log("let's go")
     async function setupConnection() {
       if (type === "caller") {
+        if(peerConnection&&localStream&&remoteStream)
         await createRoom(peerConnection, localStream, remoteStream);
       } else {
+        if(peerConnection&&localStream&&remoteStream)
         await joinRoom(peerConnection, localStream, remoteStream);
       }
     }
