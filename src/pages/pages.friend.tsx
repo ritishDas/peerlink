@@ -41,7 +41,7 @@ console.log('useEffect',resolvedFriends);
     fetchFriends();
   }, []);
   function Card({name, email, photoURL}:{name:string, email:string, photoURL:string}){
-    return <div className='flex justify-between items-center p-2 border shadow-sm rounded-md mx-5'>
+    return <div className='flex space-x-5 flex-wrap justify-between items-center p-2 border shadow-sm rounded-md mx-5'>
       <Contactcard name={name} email={email} photoURL={photoURL}/>
     <Tooltip>
     <TooltipTrigger asChild>

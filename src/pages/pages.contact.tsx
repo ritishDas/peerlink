@@ -45,7 +45,7 @@ export default function Contact() {
 // Empty dependency array is correct for a one-time fetch
   function Card({name, email, photoURL}:{name:string, email:string, photoURL:string }){
 
-    return <div className='flex justify-between items-center p-2 border shadow-sm rounded-md mx-5'>
+    return <div className='flex justify-center space-x-5 flex-wrap items-center p-2 border shadow-sm rounded-md mx-5'>
     <Contactcard name={name} email={email} photoURL={photoURL}/>
     <div className='flex space-x-5 items-center'>
     <Tooltip>

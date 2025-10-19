@@ -2,10 +2,11 @@ import { useRef, useEffect, useState } from "react";
 import { createRoom, joinRoom } from "../webrtc";
 import { callReject } from "../calling";
 import { useCall } from "@/statemng/calling";
+import { useNavigate } from "react-router-dom";
 
 export default function Callpage() {
 //export default function Callpage({type}:{type:string}) {
-
+const navigate = useNavigate();
 const {call} = useCall();
 
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -122,8 +123,10 @@ const type = call.type==='incoming'? 'callee':'caller';
 
     if (localVideoRef.current) localVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
-   // navigate(-1);
     await callReject();
+ if (window.innerWidth < 768) {
+          navigate(-1);
+    }
 
   }
 

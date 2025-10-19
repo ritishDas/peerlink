@@ -1,4 +1,4 @@
-import { Contact, Handshake, History, Phone } from 'lucide-react';
+import { Contact, Handshake, History, Phone, VideoOff } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {  Routes, Route, useNavigate } from 'react-router-dom'
 import Contactcomp from './pages/pages.contact';
@@ -13,11 +13,13 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 import Callpage from './pages/pages.call';
 import Dialpad from './pages/pages.diappad';
 import { checkCall } from './db';
+import { usePage } from './statemng/callpage';
 
 export default function Contacts() {
   const [page, setPage] = useState('contacts');
   const {setCall} = useCall();
   const {login} = useStore();
+const {callpage, setCp} = usePage();
 const navigate = useNavigate();
 useEffect(() => {
     if (!login.status) return;
@@ -46,9 +48,14 @@ if(call.data.status === 'answered'){
             id,
             user
           });
+ if (window.innerWidth < 768) {
           navigate('/call');
+    }
+    else{
+      setCp(true);
+    }
 }
-else
+else{
           setCall({
             status: true,
             answered:false,
@@ -56,11 +63,12 @@ else
             id,
             user
           });
-
+}
 
     }
     else {
 
+  setCp(false);
       setCall({status:false});
     }
     }
@@ -122,7 +130,16 @@ checkcall();
         </div>
       </TooltipProvider>
 
-      <div className="flex-1">{component}</div>
+      <div className="flex border justify-between w-full">
+      <div className='md:w-1/3 overflow-scroll'>
+      {component}
+      </div>
+      <div className='hidden md:block w-2/3 border border-r-black'>
+      {callpage?<Callpage/>:<div className='flex justify-center items-center h-full'>
+        <VideoOff size='200px'/>
+      </div>}
+      </div>
+      </div>
     </div>
   } />
 

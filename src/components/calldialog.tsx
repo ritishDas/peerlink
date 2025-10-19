@@ -6,14 +6,21 @@ import { Button } from '../components/ui/button';
 import { callAccept, callReject } from '../calling';
 import { useCall } from '../statemng/calling';
 import { useNavigate } from 'react-router-dom';
+import { usePage } from '@/statemng/callpage';
 type CardProps = { name: string; email: string; photoURL: string, type:string };
 
 function Card({ name, email, photoURL, type }: CardProps) {
   const navigate = useNavigate();
-
+const {setCp} = usePage();
   const handleAccept = async() => {
     await callAccept();
-    navigate('/call')
+ if (window.innerWidth < 768) {
+          navigate('/call');
+    }
+    else{
+      setCp(true);
+    }
+    
   };
 
   const handleReject = async() => {
