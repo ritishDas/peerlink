@@ -38,9 +38,12 @@ console.log('2')
   );
 
   // 🔹 Add local media tracks
-  localStream.getTracks().forEach(track => {
-    peerConnection.addTrack(track, localStream);
-  });
+localStream.getTracks().forEach((track) => {
+  const alreadyAdded = peerConnection.getSenders().some(
+    (s) => s.track === track
+  );
+  if (!alreadyAdded) peerConnection.addTrack(track, localStream);
+});
 
 console.log('3')
   // 🔹 Handle local ICE candidates
@@ -108,12 +111,12 @@ export async function joinRoom(
   localStream: MediaStream,
   remoteStream: MediaStream
 ) {
-  console.log(1)
+  console.log(1);
   const { login } = useStore.getState();
   const { call } = useCall.getState();
 
-registerPeerConnectionListeners(peerConnection)
-console.log(useCall.getState().call.status);
+  registerPeerConnectionListeners(peerConnection);
+  console.log(useCall.getState().call.status);
   if (!login.status || !call.status) return;
 
   const calleeEmail = login.user.email;
@@ -122,6 +125,7 @@ console.log(useCall.getState().call.status);
   const callRef = doc(db, "calls", call.id);
   const calleeIceRef = doc(db, "icecandid", calleeEmail);
   const callerIceRef = doc(db, "icecandid", callerEmail);
+
   // Ensure callee's ICE doc exists
   await setDoc(
     calleeIceRef,
@@ -129,13 +133,17 @@ console.log(useCall.getState().call.status);
     { merge: true }
   );
 
-  // 🔹 Add local tracks
-  localStream.getTracks().forEach(track => {
-    peerConnection.addTrack(track, localStream);
+  // ✅ FIX: only add tracks that aren't already sent
+  localStream.getTracks().forEach((track) => {
+    const alreadyAdded = peerConnection
+      .getSenders()
+      .some((s) => s.track === track);
+
+    if (!alreadyAdded) peerConnection.addTrack(track, localStream);
   });
 
   // 🔹 Handle outgoing ICE candidates
-  peerConnection.addEventListener("icecandidate", async event => {
+  peerConnection.addEventListener("icecandidate", async (event) => {
     if (event.candidate) {
       const candidate = event.candidate.toJSON();
       console.log("📤 Sending callee ICE candidate:", candidate);
@@ -147,21 +155,23 @@ console.log(useCall.getState().call.status);
   });
 
   // 🔹 Handle incoming remote tracks
-  peerConnection.addEventListener("track", event => {
-    event.streams[0].getTracks().forEach(track => {
+  peerConnection.addEventListener("track", (event) => {
+    event.streams[0].getTracks().forEach((track) => {
       remoteStream.addTrack(track);
     });
   });
 
   // 🔹 Wait for the caller's offer and respond with an answer
   let answered = false;
-  onSnapshot(callRef, async snapshot => {
+  onSnapshot(callRef, async (snapshot) => {
     const data = snapshot.data();
     if (!data?.offer || answered) return;
 
     console.log("📞 Received offer:", data.offer);
 
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+    await peerConnection.setRemoteDescription(
+      new RTCSessionDescription(data.offer)
+    );
 
     const answerDescription = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answerDescription);
@@ -178,7 +188,7 @@ console.log(useCall.getState().call.status);
   });
 
   // 🔹 Listen for caller's ICE candidates
-  onSnapshot(callerIceRef, async snapshot => {
+  onSnapshot(callerIceRef, async (snapshot) => {
     const data = snapshot.data();
     if (!data?.candidates) return;
 

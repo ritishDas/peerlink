@@ -5,9 +5,9 @@ import { useCall } from "@/statemng/calling";
 import { useNavigate } from "react-router-dom";
 
 export default function Callpage() {
-//export default function Callpage({type}:{type:string}) {
-const navigate = useNavigate();
-const {call} = useCall();
+  //export default function Callpage({type}:{type:string}) {
+  const navigate = useNavigate();
+  const { call } = useCall();
 
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -41,72 +41,53 @@ const {call} = useCall();
   }, [remoteStream]);
 
   // 🔹 Screen capture + audio
-async function startScreenCapture() {
-  let screenStream: MediaStream | null = null;
-  let micStream: MediaStream | null = null;
+  async function startScreenCapture() {
+    let screenStream: MediaStream;
 
-  // Try to get screen capture, fallback gracefully if not supported
-  try {
-    if (navigator.mediaDevices.getDisplayMedia) {
+    try {
       screenStream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
-        audio: false, // usually screen audio isn't supported on mobile
+        audio: false
       });
-    } else {
-      console.warn("Screen capture not supported on this device/browser.");
+    } catch (err) {
+      console.warn("Screen capture blocked:", err);
+      return;
     }
-  } catch (err) {
-    console.warn("Error accessing screen capture:", err);
-  }
 
-  // Try to get microphone audio
-  try {
-    if (navigator.mediaDevices.getUserMedia) {
+    let micStream: MediaStream | null = null;
+    try {
       micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      console.warn("Mic not available");
     }
-  } catch (err) {
-    console.warn("Error accessing microphone:", err);
-  }
 
-  // Combine streams if possible
-  let combinedStream: MediaStream;
-  if (screenStream && micStream) {
-    combinedStream = new MediaStream([
+    const combinedStream = new MediaStream([
       ...screenStream.getVideoTracks(),
-      ...micStream.getAudioTracks(),
+      ...(micStream?.getAudioTracks() ?? [])
     ]);
-  } else if (screenStream) {
-    combinedStream = screenStream;
-  } else if (micStream) {
-    combinedStream = micStream;
-  } else {
-    console.error("No media available for streaming.");
-    return;
+
+    setLocalStream(combinedStream);
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = combinedStream;
+    }
   }
 
-  setLocalStream(combinedStream);
-
-  if (localVideoRef.current) {
-    localVideoRef.current.srcObject = combinedStream;
-  }
-
-  console.log("Stream started:", combinedStream);
-}
 
   // 🔹 Setup connection once local stream is ready
   useEffect(() => {
     if (!peerConnection || !localStream) return;
-console.log("let's go")
+    console.log("let's go")
     async function setupConnection() {
 
-if(!call.status) return;
-const type = call.type==='incoming'? 'callee':'caller';
+      if (!call.status) return;
+      const type = call.type === 'incoming' ? 'callee' : 'caller';
       if (type === "caller") {
-        if(peerConnection&&localStream&&remoteStream)
-        await createRoom(peerConnection, localStream, remoteStream);
+        if (peerConnection && localStream && remoteStream)
+          await createRoom(peerConnection, localStream, remoteStream);
       } else {
-        if(peerConnection&&localStream&&remoteStream)
-        await joinRoom(peerConnection, localStream, remoteStream);
+        if (peerConnection && localStream && remoteStream)
+          await joinRoom(peerConnection, localStream, remoteStream);
       }
     }
 
@@ -124,8 +105,8 @@ const type = call.type==='incoming'? 'callee':'caller';
     if (localVideoRef.current) localVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     await callReject();
- if (window.innerWidth < 768) {
-          navigate(-1);
+    if (window.innerWidth < 768) {
+      navigate(-1);
     }
 
   }
